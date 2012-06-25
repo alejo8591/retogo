@@ -11,9 +11,6 @@ type Page struct{
 	Body []byte
 }
 
-func main() {
-	fmt.Println("Hello World!")
-}
 // This is a method named save that takes as its receiver p, a pointer to Page . 
 // It takes no parameters, and returns a value of type error.
 func (p *Page) save() error {
@@ -25,7 +22,18 @@ func (p *Page) save() error {
 }
 // The function loadPage constructs the file name from Title, 
 // reads the file's contents into a new Page, and returns a pointer to that new page.
-func loadPage(title string) *Page {
+func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
-	body, _ := ioutil.ReadFile(filename)
-	return &Page{Title: title, Body: body}
+	body,err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+		return &Page{Title: title, Body: body}, nil
+}
+
+func main(){
+	p1 := &Page{Title: "TestPage", Body: []byte("This page is example")}
+	p1.save()
+	p2, _ := loadPage("TestPage")
+	fmt.Println(string(p2.Body))
+}
